@@ -45,9 +45,9 @@ public class Post {
 	public Post() {
 	}
 
-	public Post(Integer postId, String caption, String imageURL, String videoURL, User user) {
+	public Post(Integer id,String caption, String imageURL, String videoURL, User user) {
 		super();
-		this.postId = postId;
+		this.postId = id;
 		this.caption = caption;
 		this.imageURL = imageURL;
 		this.videoURL = videoURL;
