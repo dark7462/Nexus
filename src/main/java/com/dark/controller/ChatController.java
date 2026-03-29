@@ -28,7 +28,6 @@ public class ChatController {
         if (reciver == null || sender == reciver) {
             throw new RuntimeException("Reciver not found");
         }
-        
         return chatService.createChat(sender, reciver);
     }
 

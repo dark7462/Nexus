@@ -45,5 +45,4 @@ public class ChatServiceImplimentation implements ChatService {
         }
         return chatRepository.findByUsersId(UserId);
     }
-
 }
