@@ -1,4 +1,4 @@
-package com.dark.service;
+package com.dark.service.Comments;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ import com.dark.model.Post;
 import com.dark.model.User;
 import com.dark.repository.CommentRepository;
 import com.dark.repository.PostRepository;
+import com.dark.service.Posts.PostService;
+import com.dark.service.Users.UserService;
 
 @Service
 public class CommentServiceImplimentation implements CommentService {

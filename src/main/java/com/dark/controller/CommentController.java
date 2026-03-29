@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.model.Comment;
-import com.dark.service.CommentService;
-import com.dark.service.UserService;
+import com.dark.service.Comments.CommentService;
+import com.dark.service.Users.UserService;
 
 @RestController
 public class CommentController {

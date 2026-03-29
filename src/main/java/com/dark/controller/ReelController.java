@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.model.Reels;
-import com.dark.service.UserService;
 import com.dark.service.Reels.ReelService;
+import com.dark.service.Users.UserService;
 
 @RestController
 public class ReelController {

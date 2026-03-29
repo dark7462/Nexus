@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.dark.model.Reels;
 import com.dark.model.User;
 import com.dark.repository.ReelRepository;
-import com.dark.service.UserService;
+import com.dark.service.Users.UserService;
 
 @Service
 public class ReelServiceImplimentation implements ReelService {

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.model.Post;
 import com.dark.response.ApiResponse;
-import com.dark.service.PostService;
-import com.dark.service.UserService;
+import com.dark.service.Posts.PostService;
+import com.dark.service.Users.UserService;
 
 @RestController
 public class PostContoller {

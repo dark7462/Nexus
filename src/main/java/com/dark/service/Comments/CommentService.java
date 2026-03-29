@@ -1,4 +1,4 @@
-package com.dark.service;
+package com.dark.service.Comments;
 
 import java.util.List;
 
@@ -12,6 +12,6 @@ public interface CommentService {
     public Comment findCommentById(Integer commentId);
 
     public List<Comment> getAllCommentsByPost(Integer postId);
-    
+
     public Boolean deleteComment(Integer commentId, Integer postId, Integer userId) throws Exception;
 }
