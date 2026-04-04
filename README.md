@@ -3,11 +3,11 @@
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)
 ![Hibernate](https://img.shields.io/badge/Hibernate-JPA-59666C)
-![MySQL](https://img.shields.io/badge/Database-MySQL%208.0-blue)
+![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue)
 ![Build](https://img.shields.io/badge/Build-Maven-green)
 ![Security](https://img.shields.io/badge/Security-JJWT-yellow)
 
-> A robust, highly optimized, and scalable RESTful backend for a Social Media Application built using **Java 17**, **Spring Boot**, and **MySQL**.  
+> A robust, highly optimized, and scalable RESTful backend for a Social Media Application built using **Java 17**, **Spring Boot**, and **PostgreSQL**.  
 > Designed with stateless JWT authentication, optimal database queries, and structured using Layered Architecture.
 
 ---
@@ -47,6 +47,21 @@ The system ensures clean relational data mapping, avoids N+1 query bottlenecks, 
 
 ---
 
+## 🎥 Reel Module
+
+- Create Short-form Video Reels
+- Fetch Local and Global Reels Feed
+
+---
+
+## 💬 Chat & Messaging Module
+
+- Create Direct/Group Chats with users
+- Send Real-time Messages
+- Retrieve Message History
+
+---
+
 # 🛠 Tech Stack
 
 | Layer | Technology | Purpose |
@@ -54,7 +69,7 @@ The system ensures clean relational data mapping, avoids N+1 query bottlenecks, 
 | Language | Java 17 | Core Logic |
 | Framework | Spring Boot | REST API & IoC Container |
 | ORM | Spring Data JPA (Hibernate) | Object Relational Mapping |
-| Database | MySQL 8.0 | Persistent Storage |
+| Database | PostgreSQL | Persistent Storage |
 | Security | Spring Security + JJWT 0.12.5 | Stateless Authentication |
 | Build Tool | Maven | Dependency Management |
 
@@ -68,7 +83,11 @@ The system utilizes an optimized relational schema designed to reduce unnecessar
 erDiagram
     USER ||--o{ POST : creates
     USER ||--o{ COMMENT : writes
+    USER ||--o{ REELS : creates
+    USER }|--|{ CHAT : participates
+    USER ||--o{ MESSAGE : sends
     POST ||--o{ COMMENT : has
+    CHAT ||--o{ MESSAGE : contains
     USER }|--|{ POST : saves
     USER }|--|{ USER : follows
 
@@ -96,6 +115,30 @@ erDiagram
         datetime createdAt
         int user_userId FK
         int post_postId FK
+    }
+
+    REELS {
+        int id PK
+        varchar title
+        varchar video
+        datetime createdAt
+        int userId FK
+    }
+
+    CHAT {
+        int id PK
+        varchar chat_name
+        varchar chat_image
+        datetime timeStamp
+    }
+
+    MESSAGE {
+        int id PK
+        varchar content
+        varchar image
+        datetime timeStamp
+        int user_id FK
+        int chat_id FK
     }
 ```
 
@@ -131,7 +174,7 @@ SpringSocialMediaApp/
 ## ✅ Prerequisites
 
 - Java JDK 17+
-- MySQL Server 8.0+
+- PostgreSQL Server 12+
 - Maven
 - Spring Tools (Eclipse IDE)
 
@@ -152,13 +195,14 @@ Open:
 ```
 src/main/resources/application.properties
 ```
-Ensure your MySQL configuration matches:
+Ensure your PostgreSQL configuration matches:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/socialMediaApp
+spring.datasource.url=jdbc:postgresql://localhost:5432/socialMediaApp
 spring.datasource.username={USER_NAME}
 spring.datasource.password={PASSWORD}
 spring.jpa.hibernate.ddl-auto=update
+spring.datasource.driver-class-name=org.postgresql.Driver
 ```
 
 ---
@@ -235,6 +279,22 @@ Run the Spring Boot application directly from within Spring Tools (Eclipse IDE):
 | `GET` | `/api/post/{postId}` | Get all comments for a post |
 | `DELETE` | `/api/comment/{commentId}/{postId}` | Delete a comment |
 
+### 🎥 Reel Endpoints
+| HTTP Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/reel` | Create a new reel |
+| `GET` | `/api/reels` | Get all reels |
+| `GET` | `/api/reels/{userId}` | Get reels by specific user |
+
+### 🗨️ Chat & Message Endpoints
+| HTTP Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/chats/create` | Create a new chat |
+| `GET` | `/api/chats/{chatId}` | Get chat details by ID |
+| `GET` | `/api/chats/user/{userId}` | Get all chats for a user |
+| `POST` | `/api/message/create/{chatId}` | Send a message in a chat |
+| `GET` | `/api/message/chat/{chatId}` | Get messages for a chat |
+
 ---
 
 # 🛡 Key Highlights
@@ -249,10 +309,10 @@ Run the Spring Boot application directly from within Spring Tools (Eclipse IDE):
 
 # 🚀 Future Improvements
 
-- Reel API Implementation (Short-form Video)
 - Frontend Implementation (React / Next.js)
 - DTO (Data Transfer Object) Refactoring for all endpoints
 - Notification System
+- WebSockets for fully real-time Chat & Messaging
 
 ---
 
