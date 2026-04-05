@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dark.configration.JwtProvider;
+import com.dark.configuration.JwtProvider;
 import com.dark.model.User;
 import com.dark.repository.UserRepository;
 import com.dark.request.SignInRequest;
@@ -27,44 +27,44 @@ public class AuthController {
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	CostumerUserDetailService costumerUserDetailService;
-	
+
 	@PostMapping("/signup")
 	public AuthResponse signUp(@RequestBody User user) throws Exception {
-		
+
 		User isExits = userRepository.findByEmail(user.getEmail());
-		if(isExits != null) {
+		if (isExits != null) {
 			throw new Exception("Email Already Exists..!!");
 		}
-		user.setPassword(passwordEncoder.encode(user.getPassword())); 
-		
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 		userRepository.save(user);
-		
+
 		Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-		
+
 		String token = JwtProvider.generateToken(authentication);
-		
+
 		return new AuthResponse(token, "Registed Successfull..!!!");
 	}
-	
+
 	@PostMapping("/signin")
 	public AuthResponse signIn(@RequestBody SignInRequest signInRequest) {
 		Authentication authentication = authenticate(signInRequest.getEmail(), signInRequest.getPassword());
-		
+
 		String token = JwtProvider.generateToken(authentication);
-		
+
 		return new AuthResponse(token, "Login Successfull..!!!");
-		
+
 	}
 
 	private Authentication authenticate(String email, String password) {
 		UserDetails userDetails = costumerUserDetailService.loadUserByUsername(email);
-		if(userDetails == null) {
+		if (userDetails == null) {
 			throw new BadCredentialsException("Invalid user email..!!");
 		}
-		if(!passwordEncoder.matches(password, userDetails.getPassword())) {
+		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
 			throw new BadCredentialsException("Invalid user password..!!");
 		}
 		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

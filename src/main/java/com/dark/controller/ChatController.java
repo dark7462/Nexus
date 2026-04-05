@@ -10,6 +10,7 @@ import com.dark.model.User;
 import com.dark.request.CreatChatRequest;
 import com.dark.service.Chats.ChatService;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.UserException;
 
 @RestController
 @RequestMapping("/api/chats")
@@ -22,13 +23,14 @@ public class ChatController {
     UserService userService;
 
     @PostMapping("/create")
-    public Chat createChat(@RequestBody CreatChatRequest req, @RequestHeader("Authorization") String jwt) {
+    public Chat createChat(@RequestBody CreatChatRequest req, @RequestHeader("Authorization") String jwt)
+            throws UserException {
         User sender = userService.findUserByJwt(jwt);
-        User reciver = userService.findById(req.getReciverId());
-        if (reciver == null || sender == reciver) {
-            throw new RuntimeException("Reciver not found");
+        User receiver = userService.findById(req.getReciverId());
+        if (receiver == null || sender == receiver) {
+            throw new UserException("Receiver not found");
         }
-        return chatService.createChat(sender, reciver);
+        return chatService.createChat(sender, receiver);
     }
 
     @GetMapping("/{chatId}")
@@ -37,7 +39,7 @@ public class ChatController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<Chat> findByUserId(@RequestHeader("Authorization") String jwt) {
+    public List<Chat> findByUserId(@RequestHeader("Authorization") String jwt) throws UserException {
         return chatService.findByUserId(userService.findUserByJwt(jwt).getId());
     }
 }

@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dark.model.Comment;
 import com.dark.service.Comments.CommentService;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.CommentException;
+import com.dark.Execptions.PostException;
+import com.dark.Execptions.UserException;
 
 @RestController
 public class CommentController {
@@ -26,12 +29,12 @@ public class CommentController {
 
     @PostMapping("/api/commnet/create/{postId}")
     public Comment createComment(@RequestBody Comment comment, @PathVariable Integer postId,
-            @RequestHeader("Authorization") String jwt) {
+            @RequestHeader("Authorization") String jwt) throws UserException {
         return commentService.createComment(comment, postId, userService.findUserByJwt(jwt).getId());
     }
 
     @PostMapping("/api/like/{commentId}")
-    public Comment likeComment(@PathVariable Integer commentId, @RequestHeader("Authorization") String jwt) {
+    public Comment likeComment(@PathVariable Integer commentId, @RequestHeader("Authorization") String jwt) throws CommentException, UserException {
         return commentService.likeComment(commentId, userService.findUserByJwt(jwt).getId());
     }
 
@@ -41,14 +44,14 @@ public class CommentController {
     }
 
     @GetMapping("/api/post/{postId}")
-    public List<Comment> getAllCommentsByPost(@PathVariable Integer postId) {
+    public List<Comment> getAllCommentsByPost(@PathVariable Integer postId) throws PostException {
         return commentService.getAllCommentsByPost(postId);
     }
 
     @DeleteMapping("/api/comment/{commentId}/{postId}")
     public Boolean deletComment(@PathVariable Integer commentId, @PathVariable Integer postId,
             @RequestHeader("Authorization") String jwt)
-            throws Exception {
+            throws CommentException, PostException, UserException {
         return commentService.deleteComment(commentId, postId, userService.findUserByJwt(jwt).getId());
     }
 }

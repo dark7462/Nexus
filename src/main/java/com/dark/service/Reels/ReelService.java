@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dark.model.Reels;
 import com.dark.model.User;
+import com.dark.Execptions.UserException;
 
 public interface ReelService {
 	
@@ -11,5 +12,5 @@ public interface ReelService {
 	
 	public List<Reels> findAllReels();
 	
-	public List<Reels> findUserReels(Integer userId) throws Exception;
+	public List<Reels> findUserReels(Integer userId) throws UserException;
 }

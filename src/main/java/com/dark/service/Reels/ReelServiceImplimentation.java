@@ -9,6 +9,7 @@ import com.dark.model.Reels;
 import com.dark.model.User;
 import com.dark.repository.ReelRepository;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.UserException;
 
 @Service
 public class ReelServiceImplimentation implements ReelService {
@@ -31,9 +32,9 @@ public class ReelServiceImplimentation implements ReelService {
 	}
 
 	@Override
-	public List<Reels> findUserReels(Integer userId) throws Exception {
+	public List<Reels> findUserReels(Integer userId) throws UserException {
 		if (userService.findById(userId) == null) {
-			throw new Exception("User doesn't exsits..!!");
+			throw new UserException("User doesn't exsits..!!");
 		}
 		return reelRepository.findByUserId(userId);
 	}

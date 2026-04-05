@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.model.User;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.UserException;
 
 @RestController
 public class UserController {
@@ -35,7 +36,7 @@ public class UserController {
 
 	@PutMapping("/api/user")
 	public ResponseEntity<User> updateUser(@RequestBody User user, @RequestHeader("Authorization") String jwt)
-			throws Exception {
+			throws UserException {
 		User updatedUser = userService.updateUser(user, userService.findUserByJwt(jwt).getId());
 		if (updatedUser == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -45,12 +46,12 @@ public class UserController {
 	}
 
 	@PutMapping("/api/users/follow/{userid2}")
-	public User followUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2) throws Exception {
+	public User followUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2) throws UserException {
 		return userService.followUser(userService.findUserByJwt(jwt).getId(), userid2);
 	}
 
 	@DeleteMapping("/api/users/unfollow/{userid2}")
-	public User unFollowUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2) throws Exception {
+	public User unFollowUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2) throws UserException {
 		return userService.unFollowUser(userService.findUserByJwt(jwt).getId(), userid2);
 	}
 

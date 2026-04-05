@@ -9,6 +9,8 @@ import com.dark.model.Post;
 import com.dark.model.User;
 import com.dark.repository.PostRepository;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.PostException;
+import com.dark.Execptions.UserException;
 
 @Service
 public class PostServiceImplimentation implements PostService {
@@ -20,10 +22,10 @@ public class PostServiceImplimentation implements PostService {
 	UserService userService;
 
 	@Override
-	public Post createPost(Post post, int userID) throws Exception {
+	public Post createPost(Post post, int userID) throws UserException {
 		User user = userService.findById(userID);
 		if (user == null) {
-			throw new Exception("User Not Found");
+			throw new UserException("User Not Found");
 		}
 		post.setUser(user);
 
@@ -31,23 +33,23 @@ public class PostServiceImplimentation implements PostService {
 	}
 
 	@Override
-	public String deletPost(int postId, int userId) throws Exception {
+	public String deletPost(int postId, int userId) throws PostException, UserException {
 		Post post = findPostById(postId);
 		if (post == null) {
-			throw new Exception("Post Not Exists...!!");
+			throw new PostException("Post Not Exists...!!");
 		}
 		if (post.getUser().getId() != userId) {
-			throw new Exception("User Does't Own this post...!!");
+			throw new UserException("User Does't Own this post...!!");
 		}
 		postRepositoy.delete(post);
 		return "Post deleted...!!";
 	}
 
 	@Override
-	public List<Post> findAllPostByUserId(int userId) throws Exception {
+	public List<Post> findAllPostByUserId(int userId) throws UserException {
 		User user = userService.findById(userId);
 		if (user == null) {
-			throw new Exception("User Not Found");
+			throw new UserException("User Not Found");
 		}
 		return postRepositoy.findAllPostByUserId(userId);
 	}
@@ -63,14 +65,14 @@ public class PostServiceImplimentation implements PostService {
 	}
 
 	@Override
-	public Post savePost(int postId, int userId) throws Exception {
+	public Post savePost(int postId, int userId) throws PostException, UserException {
 		Post post = findPostById(postId);
 		User user = userService.findById(userId);
 		if (user == null) {
-			throw new Exception("User Not Found");
+			throw new UserException("User Not Found");
 		}
 		if (post == null) {
-			throw new Exception("Post Not Exists...!!");
+			throw new PostException("Post Not Exists...!!");
 		}
 
 		if (user.getSavedPosts().contains(post)) {
@@ -83,14 +85,14 @@ public class PostServiceImplimentation implements PostService {
 	}
 
 	@Override
-	public Post likePost(int postId, int userId) throws Exception {
+	public Post likePost(int postId, int userId) throws PostException, UserException {
 		Post post = findPostById(postId);
 		User user = userService.findById(userId);
 		if (user == null) {
-			throw new Exception("User Not Found");
+			throw new UserException("User Not Found");
 		}
 		if (post == null) {
-			throw new Exception("Post Not Exists...!!");
+			throw new PostException("Post Not Exists...!!");
 		}
 
 		// if liked the unlike

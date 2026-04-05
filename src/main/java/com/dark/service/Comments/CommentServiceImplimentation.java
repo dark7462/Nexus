@@ -12,6 +12,9 @@ import com.dark.repository.CommentRepository;
 import com.dark.repository.PostRepository;
 import com.dark.service.Posts.PostService;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.CommentException;
+import com.dark.Execptions.PostException;
+import com.dark.Execptions.UserException;
 
 @Service
 public class CommentServiceImplimentation implements CommentService {
@@ -46,14 +49,14 @@ public class CommentServiceImplimentation implements CommentService {
     }
 
     @Override
-    public Comment likeComment(Integer commentId, Integer userId) {
+    public Comment likeComment(Integer commentId, Integer userId) throws CommentException, UserException {
         Comment comment = findCommentById(commentId);
         if (comment == null) {
-            throw new RuntimeException("Comment not found");
+            throw new CommentException("Comment not found");
         }
         User user = userService.findById(userId);
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new UserException("User not found");
         }
 
         if (comment.getLiked().contains(user)) {
@@ -71,32 +74,32 @@ public class CommentServiceImplimentation implements CommentService {
     }
 
     @Override
-    public List<Comment> getAllCommentsByPost(Integer postId) {
+    public List<Comment> getAllCommentsByPost(Integer postId) throws PostException {
         Post post = postService.findPostById(postId);
         if (post == null) {
-            throw new RuntimeException("Post not found");
+            throw new PostException("Post not found");
         }
         return post.getComments();
     }
 
     @Override
-    public Boolean deleteComment(Integer commentId, Integer postId, Integer userId) throws Exception {
+    public Boolean deleteComment(Integer commentId, Integer postId, Integer userId) throws CommentException, PostException, UserException {
         Post post = postService.findPostById(postId);
         if (post == null) {
-            throw new Exception("post Not Found");
+            throw new PostException("post Not Found");
         }
         if (findCommentById(commentId) == null) {
-            throw new Exception("comment Not Found");
+            throw new CommentException("comment Not Found");
         }
         if (findCommentById(commentId).getUser().getId() != userId) {
-            throw new Exception("User doesn't own this comment..!!");
+            throw new UserException("User doesn't own this comment..!!");
         }
         if (post.getComments().contains(findCommentById(commentId))) {
             post.getComments().remove(findCommentById(commentId));
             commentRepository.delete(findCommentById(commentId));
             return true;
         }
-        throw new Exception("Invalid comment to delet");
+        throw new CommentException("Invalid comment to delet");
     }
 
 }

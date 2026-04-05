@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dark.model.Reels;
 import com.dark.service.Reels.ReelService;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.UserException;
 
 @RestController
 public class ReelController {
@@ -34,7 +35,7 @@ public class ReelController {
 	}
 
 	@GetMapping("/api/reels/{userId}")
-	public List<Reels> findUserReels(@PathVariable Integer userId) throws Exception {
+	public List<Reels> findUserReels(@PathVariable Integer userId) throws UserException {
 		return reelService.findUserReels(userId);
 	}
 }

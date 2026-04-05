@@ -7,9 +7,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dark.configration.JwtProvider;
+import com.dark.configuration.JwtProvider;
 import com.dark.model.User;
 import com.dark.repository.UserRepository;
+import com.dark.Execptions.UserException;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -38,7 +39,7 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public User updateUser(User user, int id) throws Exception {
+	public User updateUser(User user, int id) throws UserException {
 		User updatedUser = findById(id);
 		if (updatedUser == null) {
 			return null;
@@ -55,16 +56,16 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public User followUser(int userId1, int userId2) throws Exception {
+	public User followUser(int userId1, int userId2) throws UserException {
 		// user1 will unfollow user2
 		if (userId1 == userId2)
-			throw new IllegalArgumentException("can't follow yourself");
+			throw new UserException("can't follow yourself");
 
 		User user1 = findById(userId1);
 		User user2 = findById(userId2);
 
 		if (user1 == null || user2 == null) {
-			throw new IllegalArgumentException("User not found");
+			throw new UserException("User not found");
 		}
 		user1.getFollowing().add(userId2);
 		user2.getFollowers().add(userId1);
@@ -76,16 +77,16 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public User unFollowUser(int userId1, int userId2) throws Exception {
+	public User unFollowUser(int userId1, int userId2) throws UserException {
 		// user1 will follow user2
 		if (userId1 == userId2)
-			throw new IllegalArgumentException("can't follow yourself");
+			throw new UserException("can't follow yourself");
 
 		User user1 = findById(userId1);
 		User user2 = findById(userId2);
 
 		if (user1 == null || user2 == null) {
-			throw new IllegalArgumentException("User not found");
+			throw new UserException("User not found");
 		}
 
 		Set<Integer> set = user1.getFollowing();

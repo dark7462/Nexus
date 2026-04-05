@@ -10,6 +10,7 @@ import com.dark.model.Chat;
 import com.dark.model.User;
 import com.dark.repository.ChatRepository;
 import com.dark.service.Users.UserService;
+import com.dark.Execptions.UserException;
 
 @Service
 public class ChatServiceImplimentation implements ChatService {
@@ -39,9 +40,9 @@ public class ChatServiceImplimentation implements ChatService {
     }
 
     @Override
-    public List<Chat> findByUserId(Integer UserId) {
+    public List<Chat> findByUserId(Integer UserId) throws UserException {
         if (userService.findById(UserId) == null) {
-            throw new RuntimeException("User not found");
+            throw new UserException("User not found");
         }
         return chatRepository.findByUsersId(UserId);
     }

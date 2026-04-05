@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.dark.model.Chat;
 import com.dark.model.User;
+import com.dark.Execptions.UserException;
 
 public interface ChatService {
-	public Chat createChat(User sender, User reciver);
+	public Chat createChat(User sender, User receiver);
 
 	public Chat findByChatId(Integer chatId);
 
-	public List<Chat> findByUserId(Integer UserId);
+	public List<Chat> findByUserId(Integer UserId) throws UserException;
 }
