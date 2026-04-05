@@ -1,4 +1,4 @@
-package com.dark.configration;
+package com.dark.configuration;
 
 public class jwtConstant {
 	public static String JWT_HEADER = "Authorization";

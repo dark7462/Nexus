@@ -1,4 +1,4 @@
-package com.dark.configration;
+package com.dark.configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,16 +21,15 @@ public class jwtValidator extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String jwt = request.getHeader(jwtConstant.JWT_HEADER);
-		
-		if(jwt != null) {
+
+		if (jwt != null) {
 			try {
 				String email = JwtProvider.getEmailFromJwtToken(jwt);
 				List<GrantedAuthority> auth = new ArrayList<>();
 				Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auth);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				throw new BadCredentialsException("Invalid Token");
 			}
 		}
