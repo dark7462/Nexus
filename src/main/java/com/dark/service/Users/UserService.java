@@ -27,7 +27,7 @@ public interface UserService {
 
 	public Page<User> searchUser(String query, Pageable pageable);
 
-	public void deletUser(int userId);
+	public void deleteUser(int userId);
 
 	public User unFollowUser(int userid1, int userid2) throws UserException;
 
