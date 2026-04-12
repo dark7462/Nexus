@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dark.configuration.JwtProvider;
@@ -24,6 +29,7 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
+	@Cacheable(value = "users", key = "#id")
 	public User findById(int id) {
 		return userRepository.findById(id).orElse(null);
 	}
@@ -39,6 +45,15 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
+	public Page<User> findAll(Pageable pageable) {
+		return userRepository.findAll(pageable);
+	}
+
+	@Override
+	@Caching(evict = {
+		@CacheEvict(value = "users", key = "#id"),
+		@CacheEvict(value = "userProfiles", allEntries = true)
+	})
 	public User updateUser(User user, int id) throws UserException {
 		User updatedUser = findById(id);
 		if (updatedUser == null) {
@@ -56,6 +71,7 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
+	@CacheEvict(value = "users", allEntries = true)
 	public User followUser(int userId1, int userId2) throws UserException {
 		// user1 will unfollow user2
 		if (userId1 == userId2)
@@ -77,6 +93,7 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
+	@CacheEvict(value = "users", allEntries = true)
 	public User unFollowUser(int userId1, int userId2) throws UserException {
 		// user1 will follow user2
 		if (userId1 == userId2)
@@ -135,12 +152,18 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
+	public Page<User> searchUser(String query, Pageable pageable) {
+		return userRepository.searchUser(query, pageable);
+	}
+
+	@Override
 	public void deletUser(int userId) {
 		userRepository.deleteById(userId);
 		return;
 	}
 
 	@Override
+	@Cacheable(value = "userProfiles", key = "#jwt")
 	public User findUserByJwt(String jwt) {
 		return userRepository.findByEmail(JwtProvider.getEmailFromJwtToken(jwt));
 	}

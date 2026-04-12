@@ -3,6 +3,8 @@ package com.dark.service.Reels;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dark.model.Reels;
@@ -29,6 +31,11 @@ public class ReelServiceImplimentation implements ReelService {
 	@Override
 	public List<Reels> findAllReels() {
 		return reelRepository.findAll();
+	}
+
+	@Override
+	public Page<Reels> findAllReels(Pageable pageable) {
+		return reelRepository.findAll(pageable);
 	}
 
 	@Override

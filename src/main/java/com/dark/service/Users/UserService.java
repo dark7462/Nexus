@@ -2,6 +2,9 @@ package com.dark.service.Users;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.dark.model.User;
 import com.dark.Execptions.UserException;
 
@@ -14,11 +17,15 @@ public interface UserService {
 
 	public List<User> findAll();
 
+	public Page<User> findAll(Pageable pageable);
+
 	public User updateUser(User user, int id) throws UserException;
 
 	public User followUser(int userId1, int userId2) throws UserException;
 
 	public List<User> searchUser(String query);
+
+	public Page<User> searchUser(String query, Pageable pageable);
 
 	public void deletUser(int userId);
 

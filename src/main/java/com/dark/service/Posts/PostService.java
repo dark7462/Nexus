@@ -2,6 +2,8 @@ package com.dark.service.Posts;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.dark.model.Post;
@@ -18,6 +20,8 @@ public interface PostService {
 	Post findPostById(int postId);
 
 	List<Post> findAllPost();
+
+	Page<Post> findAllPost(Pageable pageable);
 
 	Post savePost(int postId, int userId) throws PostException, UserException;
 

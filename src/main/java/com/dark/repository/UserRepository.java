@@ -2,6 +2,8 @@ package com.dark.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	@Query("SELECT DISTINCT u FROM User u WHERE u.firstName LIKE %:query% OR u.lastName LIKE %:query% OR u.email LIKE %:query%")
 	public List<User> searchUser(@Param(value = "query") String query);
-	
-	
+
+	@Query("SELECT DISTINCT u FROM User u WHERE u.firstName LIKE %:query% OR u.lastName LIKE %:query% OR u.email LIKE %:query%")
+	public Page<User> searchUser(@Param(value = "query") String query, Pageable pageable);
 }
