@@ -3,6 +3,9 @@ package com.dark.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,8 +56,9 @@ public class PostContoller {
 	}
 
 	@GetMapping("/api/allposts")
-	public ResponseEntity<List<Post>> findAllPostHandler() throws Exception {
-		return new ResponseEntity<>(postService.findAllPost(), HttpStatus.OK);
+	public ResponseEntity<Page<Post>> findAllPostHandler(
+			@PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+		return new ResponseEntity<>(postService.findAllPost(pageable), HttpStatus.OK);
 	}
 
 	@PutMapping("/api/post/savepost/{postId}")

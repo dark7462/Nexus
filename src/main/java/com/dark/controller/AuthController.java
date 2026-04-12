@@ -1,6 +1,8 @@
 package com.dark.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +34,7 @@ public class AuthController {
 	CostumerUserDetailService costumerUserDetailService;
 
 	@PostMapping("/signup")
-	public AuthResponse signUp(@RequestBody User user) throws Exception {
+	public ResponseEntity<AuthResponse> signUp(@RequestBody User user) throws Exception {
 
 		User isExits = userRepository.findByEmail(user.getEmail());
 		if (isExits != null) {
@@ -46,17 +48,16 @@ public class AuthController {
 
 		String token = JwtProvider.generateToken(authentication);
 
-		return new AuthResponse(token, "Registed Successfull..!!!");
+		return new ResponseEntity<>(new AuthResponse(token, "Registed Successfull..!!!"), HttpStatus.CREATED);
 	}
 
 	@PostMapping("/signin")
-	public AuthResponse signIn(@RequestBody SignInRequest signInRequest) {
+	public ResponseEntity<AuthResponse> signIn(@RequestBody SignInRequest signInRequest) {
 		Authentication authentication = authenticate(signInRequest.getEmail(), signInRequest.getPassword());
 
 		String token = JwtProvider.generateToken(authentication);
 
-		return new AuthResponse(token, "Login Successfull..!!!");
-
+		return new ResponseEntity<>(new AuthResponse(token, "Login Successfull..!!!"), HttpStatus.OK);
 	}
 
 	private Authentication authenticate(String email, String password) {

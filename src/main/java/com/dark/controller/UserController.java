@@ -1,8 +1,9 @@
 package com.dark.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,13 +26,14 @@ public class UserController {
 	UserService userService;
 
 	@GetMapping("/api/users")
-	public List<User> getAllUsers() {
-		return userService.findAll();
+	public ResponseEntity<Page<User>> getAllUsers(
+			@PageableDefault(size = 20, sort = "firstName") Pageable pageable) {
+		return new ResponseEntity<>(userService.findAll(pageable), HttpStatus.OK);
 	}
 
 	@GetMapping("/api/user/{id}")
-	public User getUserById(@PathVariable int id) {
-		return userService.findById(id);
+	public ResponseEntity<User> getUserById(@PathVariable int id) {
+		return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
 	}
 
 	@PutMapping("/api/user")
@@ -46,34 +48,39 @@ public class UserController {
 	}
 
 	@PutMapping("/api/users/follow/{userid2}")
-	public User followUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2) throws UserException {
-		return userService.followUser(userService.findUserByJwt(jwt).getId(), userid2);
+	public ResponseEntity<User> followUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2)
+			throws UserException {
+		return new ResponseEntity<>(userService.followUser(userService.findUserByJwt(jwt).getId(), userid2),
+				HttpStatus.OK);
 	}
 
 	@DeleteMapping("/api/users/unfollow/{userid2}")
-	public User unFollowUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2) throws UserException {
-		return userService.unFollowUser(userService.findUserByJwt(jwt).getId(), userid2);
+	public ResponseEntity<User> unFollowUser(@RequestHeader("Authorization") String jwt, @PathVariable int userid2)
+			throws UserException {
+		return new ResponseEntity<>(userService.unFollowUser(userService.findUserByJwt(jwt).getId(), userid2),
+				HttpStatus.OK);
 	}
 
 	@GetMapping("/api/user/{userid}/followers/count")
-	public String getFollowersCount(@PathVariable int userid) {
-		return userService.getFollowersCount(userid);
+	public ResponseEntity<String> getFollowersCount(@PathVariable int userid) {
+		return new ResponseEntity<>(userService.getFollowersCount(userid), HttpStatus.OK);
 	}
 
 	@GetMapping("/api/user/{userid}/following/count")
-	public String getFollowingCount(@PathVariable int userid) {
-		return userService.getFollowingCount(userid);
+	public ResponseEntity<String> getFollowingCount(@PathVariable int userid) {
+		return new ResponseEntity<>(userService.getFollowingCount(userid), HttpStatus.OK);
 	}
 
 	@GetMapping("/api/user/search")
-	public List<User> searchUser(@RequestParam String query) {
-		return userService.searchUser(query);
+	public ResponseEntity<Page<User>> searchUser(@RequestParam String query,
+			@PageableDefault(size = 20, sort = "firstName") Pageable pageable) {
+		return new ResponseEntity<>(userService.searchUser(query, pageable), HttpStatus.OK);
 	}
 
 	@GetMapping("/api/users/profile")
-	public User getUserFromToken(@RequestHeader("Authorization") String jwt) {
+	public ResponseEntity<User> getUserFromToken(@RequestHeader("Authorization") String jwt) {
 		User user = userService.findUserByJwt(jwt);
 		user.setPassword(null);
-		return user;
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 }

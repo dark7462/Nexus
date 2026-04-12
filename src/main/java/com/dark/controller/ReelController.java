@@ -3,6 +3,11 @@ package com.dark.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,17 +30,19 @@ public class ReelController {
 	UserService userService;
 
 	@PostMapping("/api/reel")
-	public Reels createReel(@RequestBody Reels reel, @RequestHeader("Authorization") String jwt) {
-		return reelService.createReel(reel, userService.findUserByJwt(jwt));
+	public ResponseEntity<Reels> createReel(@RequestBody Reels reel,
+			@RequestHeader("Authorization") String jwt) {
+		return new ResponseEntity<>(reelService.createReel(reel, userService.findUserByJwt(jwt)), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/api/reels")
-	public List<Reels> findAllReels() {
-		return reelService.findAllReels();
+	public ResponseEntity<Page<Reels>> findAllReels(
+			@PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+		return new ResponseEntity<>(reelService.findAllReels(pageable), HttpStatus.OK);
 	}
 
 	@GetMapping("/api/reels/{userId}")
-	public List<Reels> findUserReels(@PathVariable Integer userId) throws UserException {
-		return reelService.findUserReels(userId);
+	public ResponseEntity<List<Reels>> findUserReels(@PathVariable Integer userId) throws UserException {
+		return new ResponseEntity<>(reelService.findUserReels(userId), HttpStatus.OK);
 	}
 }
