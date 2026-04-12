@@ -29,7 +29,6 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	@Cacheable(value = "users", key = "#id")
 	public User findById(int id) {
 		return userRepository.findById(id).orElse(null);
 	}
@@ -50,10 +49,6 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	@Caching(evict = {
-		@CacheEvict(value = "users", key = "#id"),
-		@CacheEvict(value = "userProfiles", allEntries = true)
-	})
 	public User updateUser(User user, int id) throws UserException {
 		User updatedUser = findById(id);
 		if (updatedUser == null) {
@@ -62,16 +57,12 @@ public class UserServiceImplementation implements UserService {
 		updatedUser.setFirstName(user.getFirstName());
 		updatedUser.setLastName(user.getLastName());
 		updatedUser.setEmail(user.getEmail());
-		updatedUser.setFollowers(user.getFollowers());
-		updatedUser.setFollowing(user.getFollowing());
-		updatedUser.setPassword(user.getPassword());
 		updatedUser.setGender(user.getGender());
 		userRepository.save(updatedUser);
 		return updatedUser;
 	}
 
 	@Override
-	@CacheEvict(value = "users", allEntries = true)
 	public User followUser(int userId1, int userId2) throws UserException {
 		// user1 will unfollow user2
 		if (userId1 == userId2)
@@ -93,7 +84,6 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	@CacheEvict(value = "users", allEntries = true)
 	public User unFollowUser(int userId1, int userId2) throws UserException {
 		// user1 will follow user2
 		if (userId1 == userId2)
@@ -163,7 +153,6 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	@Cacheable(value = "userProfiles", key = "#jwt")
 	public User findUserByJwt(String jwt) {
 		return userRepository.findByEmail(JwtProvider.getEmailFromJwtToken(jwt));
 	}
