@@ -23,17 +23,16 @@ public class Chat {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	private String chat_name;
+	private String chatName;
 
-	private String chat_image;
+	private String chatImage;
 
 	@ManyToMany
 	private List<User> users = new ArrayList<>();
 
 	private LocalDateTime timeStamp;
-	
+
 	@OneToMany(mappedBy = "chat")
 	private List<Message> messages = new ArrayList<>();
-	
-	
+
 }
