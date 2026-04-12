@@ -14,8 +14,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@NoArgsConstructor
 @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Post {
 
@@ -37,92 +41,8 @@ public class Post {
 	@ManyToMany
 	private Set<User> likedUsers = new HashSet<>();
 
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@OneToMany(mappedBy = "post", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments = new ArrayList<>();
-
-	public Post() {
-	}
-
-	public Post(Integer id,String caption, String imageURL, String videoURL, User user) {
-		super();
-		this.postId = id;
-		this.caption = caption;
-		this.imageURL = imageURL;
-		this.videoURL = videoURL;
-		this.user = user;
-		this.createdAt = LocalDateTime.now();
-	}
-
-	public Integer getPostId() {
-		return postId;
-	}
-
-	public void setPostId(int postId) {
-		this.postId = postId;
-	}
-
-	public String getCaption() {
-		return caption;
-	}
-
-	public void setCaption(String caption) {
-		this.caption = caption;
-	}
-
-	public String getImageURL() {
-		return imageURL;
-	}
-
-	public void setImageURL(String imageURL) {
-		this.imageURL = imageURL;
-	}
-
-	public String getVideoURL() {
-		return videoURL;
-	}
-
-	public void setVideoURL(String videoURL) {
-		this.videoURL = videoURL;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Set<User> getLikedUsers() {
-		return likedUsers;
-	}
-
-	public void setLikedUsers(Set<User> likedUsers) {
-		this.likedUsers = likedUsers;
-	}
-
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
-
-	@Override
-	public String toString() {
-		return "Post [postId=" + postId + ", caption=" + caption + ", imageURL=" + imageURL + ", videoURL=" + videoURL
-				+ ", user=" + user + ", likedUsers=" + likedUsers + ", createdAt=" + createdAt + ", comments="
-				+ comments + "]";
-	}
 }

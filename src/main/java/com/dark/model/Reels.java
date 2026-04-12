@@ -27,13 +27,5 @@ public class Reels {
 	@JoinColumn(name = "userId")
 	private User user;
 
-	private LocalDateTime createdAt;
-
-	public Reels(Integer id, String title, String video) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.video = video;
-		this.createdAt = LocalDateTime.now();
-	}
+	private LocalDateTime createdAt = LocalDateTime.now();
 }
