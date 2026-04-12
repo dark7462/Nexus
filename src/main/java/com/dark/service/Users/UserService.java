@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.dark.model.User;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 public interface UserService {
 	public User registerUser(User user);

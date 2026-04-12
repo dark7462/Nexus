@@ -12,9 +12,9 @@ import com.dark.repository.CommentRepository;
 import com.dark.repository.PostRepository;
 import com.dark.service.Posts.PostService;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.CommentException;
-import com.dark.Execptions.PostException;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.CommentException;
+import com.dark.Exceptions.PostException;
+import com.dark.Exceptions.UserException;
 
 @Service
 public class CommentServiceImplimentation implements CommentService {

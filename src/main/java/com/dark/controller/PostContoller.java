@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dark.response.ApiResponse;
 import com.dark.service.Posts.PostService;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.PostException;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.PostException;
+import com.dark.Exceptions.UserException;
 import com.dark.model.Post;
 
 @RestController

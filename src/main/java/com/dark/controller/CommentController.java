@@ -17,9 +17,9 @@ import com.dark.model.Comment;
 import com.dark.response.ApiResponse;
 import com.dark.service.Comments.CommentService;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.CommentException;
-import com.dark.Execptions.PostException;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.CommentException;
+import com.dark.Exceptions.PostException;
+import com.dark.Exceptions.UserException;
 
 @RestController
 public class CommentController {

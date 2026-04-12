@@ -1,4 +1,4 @@
-package com.dark.Execptions;
+package com.dark.Exceptions;
 
 public class PostException extends Exception {
     public PostException(String message) {

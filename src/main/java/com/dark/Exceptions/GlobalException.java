@@ -1,4 +1,4 @@
-package com.dark.Execptions;
+package com.dark.Exceptions;
 
 import java.time.LocalDateTime;
 

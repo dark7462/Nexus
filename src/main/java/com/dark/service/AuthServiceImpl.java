@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.dark.Exceptions.UserException;
 import com.dark.configuration.JwtProvider;
 import com.dark.model.User;
 import com.dark.repository.UserRepository;
@@ -24,13 +25,13 @@ public class AuthServiceImpl implements AuthService {
 	PasswordEncoder passwordEncoder;
 
 	@Autowired
-	CostumerUserDetailService costumerUserDetailService;
+	CustomerUserDetailService customerUserDetailService;
 
 	@Override
-	public AuthResponse signUp(User user) throws Exception {
+	public AuthResponse signUp(User user) throws UserException {
 		User isExits = userRepository.findByEmail(user.getEmail());
 		if (isExits != null) {
-			throw new Exception("Email Already Exists..!!");
+			throw new UserException("Email Already Exists..!!");
 		}
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private Authentication authenticate(String email, String password) {
-		UserDetails userDetails = costumerUserDetailService.loadUserByUsername(email);
+		UserDetails userDetails = customerUserDetailService.loadUserByUsername(email);
 		if (userDetails == null) {
 			throw new BadCredentialsException("Invalid user email..!!");
 		}

@@ -11,7 +11,7 @@ import com.dark.model.Reels;
 import com.dark.model.User;
 import com.dark.repository.ReelRepository;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 @Service
 public class ReelServiceImplimentation implements ReelService {

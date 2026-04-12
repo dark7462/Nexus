@@ -1,4 +1,4 @@
-package com.dark.Execptions;
+package com.dark.Exceptions;
 
 public class CommentException extends Exception {
     public CommentException(String message) {

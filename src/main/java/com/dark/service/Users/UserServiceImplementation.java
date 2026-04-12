@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.dark.configuration.JwtProvider;
 import com.dark.model.User;
 import com.dark.repository.UserRepository;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 @Service
 public class UserServiceImplementation implements UserService {

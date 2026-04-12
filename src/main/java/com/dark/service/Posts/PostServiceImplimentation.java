@@ -11,8 +11,8 @@ import com.dark.model.Post;
 import com.dark.model.User;
 import com.dark.repository.PostRepository;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.PostException;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.PostException;
+import com.dark.Exceptions.UserException;
 
 @Service
 public class PostServiceImplimentation implements PostService {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dark.Exceptions.UserException;
 import com.dark.model.User;
 import com.dark.request.SignInRequest;
 import com.dark.response.AuthResponse;
@@ -21,7 +22,7 @@ public class AuthController {
 	AuthService authService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<AuthResponse> signUp(@RequestBody User user) throws Exception {
+	public ResponseEntity<AuthResponse> signUp(@RequestBody User user) throws UserException {
 		AuthResponse response = authService.signUp(user);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}

@@ -3,9 +3,9 @@ package com.dark.service.Comments;
 import java.util.List;
 
 import com.dark.model.Comment;
-import com.dark.Execptions.CommentException;
-import com.dark.Execptions.PostException;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.CommentException;
+import com.dark.Exceptions.PostException;
+import com.dark.Exceptions.UserException;
 
 public interface CommentService {
     public Comment createComment(Comment comment, Integer postId, Integer userId);

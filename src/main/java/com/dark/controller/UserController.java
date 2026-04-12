@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.model.User;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 @RestController
 public class UserController {

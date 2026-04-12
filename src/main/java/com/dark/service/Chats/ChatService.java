@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.dark.model.Chat;
 import com.dark.model.User;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 public interface ChatService {
 	public Chat createChat(User sender, User receiver);

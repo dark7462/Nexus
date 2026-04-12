@@ -10,7 +10,7 @@ import com.dark.model.Chat;
 import com.dark.model.User;
 import com.dark.repository.ChatRepository;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 @Service
 public class ChatServiceImplimentation implements ChatService {

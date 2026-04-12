@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dark.model.Reels;
 import com.dark.service.Reels.ReelService;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 @RestController
 public class ReelController {

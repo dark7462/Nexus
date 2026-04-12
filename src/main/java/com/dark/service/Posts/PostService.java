@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.dark.model.Post;
-import com.dark.Execptions.PostException;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.PostException;
+import com.dark.Exceptions.UserException;
 
 public interface PostService {
 	Post createPost(@RequestBody Post post, int userID) throws UserException;

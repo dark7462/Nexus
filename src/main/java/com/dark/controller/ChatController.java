@@ -12,7 +12,7 @@ import com.dark.model.User;
 import com.dark.request.CreatChatRequest;
 import com.dark.service.Chats.ChatService;
 import com.dark.service.Users.UserService;
-import com.dark.Execptions.UserException;
+import com.dark.Exceptions.UserException;
 
 @RestController
 @RequestMapping("/api/chats")
