@@ -18,11 +18,16 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.response.ApiResponse;
+import com.dark.response.PostDto;
+import com.dark.request.CreatePostRequest;
+import com.dark.mapper.DtoMapper;
 import com.dark.service.Posts.PostService;
 import com.dark.service.Users.UserService;
 import com.dark.Exceptions.PostException;
 import com.dark.Exceptions.UserException;
 import com.dark.model.Post;
+import jakarta.validation.Valid;
+import java.util.stream.Collectors;
 
 @RestController
 public class PostContoller {
@@ -34,10 +39,14 @@ public class PostContoller {
 	UserService userService;
 
 	@PostMapping("/api/post")
-	public ResponseEntity<Post> createPostHandler(@RequestBody Post post, @RequestHeader("Authorization") String jwt)
+	public ResponseEntity<PostDto> createPostHandler(@Valid @RequestBody CreatePostRequest req, @RequestHeader("Authorization") String jwt)
 			throws UserException {
-		return new ResponseEntity<>(postService.createPost(post, userService.findUserByJwt(jwt).getId()),
-				HttpStatus.CREATED);
+		Post post = new Post();
+		post.setCaption(req.getCaption());
+		post.setImageURL(req.getImageURL());
+		post.setVideoURL(req.getVideoURL());
+		Post createdPost = postService.createPost(post, userService.findUserByJwt(jwt).getId());
+		return new ResponseEntity<>(DtoMapper.toPostDto(createdPost), HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/api/post/{postId}")
@@ -49,29 +58,30 @@ public class PostContoller {
 	}
 
 	@GetMapping("/api/posts")
-	public ResponseEntity<List<Post>> findAllPostByUserIdHandler(@RequestHeader("Authorization") String jwt)
+	public ResponseEntity<List<PostDto>> findAllPostByUserIdHandler(@RequestHeader("Authorization") String jwt)
 			throws UserException {
-		return new ResponseEntity<>(postService.findAllPostByUserId(userService.findUserByJwt(jwt).getId()),
-				HttpStatus.OK);
+		List<PostDto> posts = postService.findAllPostByUserId(userService.findUserByJwt(jwt).getId()).stream().map(DtoMapper::toPostDto).collect(Collectors.toList());
+		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 
 	@GetMapping("/api/allposts")
-	public ResponseEntity<Page<Post>> findAllPostHandler(
+	public ResponseEntity<Page<PostDto>> findAllPostHandler(
 			@PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
-		return new ResponseEntity<>(postService.findAllPost(pageable), HttpStatus.OK);
+		Page<PostDto> posts = postService.findAllPost(pageable).map(DtoMapper::toPostDto);
+		return new ResponseEntity<>(posts, HttpStatus.OK);
 	}
 
 	@PutMapping("/api/post/savepost/{postId}")
-	public ResponseEntity<Post> savePostHandler(@PathVariable Integer postId,
+	public ResponseEntity<PostDto> savePostHandler(@PathVariable Integer postId,
 			@RequestHeader("Authorization") String jwt) throws PostException, UserException {
-		return new ResponseEntity<>(postService.savePost(postId, userService.findUserByJwt(jwt).getId()),
+		return new ResponseEntity<>(DtoMapper.toPostDto(postService.savePost(postId, userService.findUserByJwt(jwt).getId())),
 				HttpStatus.ACCEPTED);
 	}
 
 	@PutMapping("/api/post/likepost/{postId}")
-	public ResponseEntity<Post> likePostHandler(@PathVariable Integer postId,
+	public ResponseEntity<PostDto> likePostHandler(@PathVariable Integer postId,
 			@RequestHeader("Authorization") String jwt) throws PostException, UserException {
-		return new ResponseEntity<>(postService.likePost(postId, userService.findUserByJwt(jwt).getId()),
+		return new ResponseEntity<>(DtoMapper.toPostDto(postService.likePost(postId, userService.findUserByJwt(jwt).getId())),
 				HttpStatus.ACCEPTED);
 	}
 }

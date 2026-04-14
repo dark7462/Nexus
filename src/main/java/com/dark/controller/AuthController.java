@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import com.dark.Exceptions.UserException;
-import com.dark.model.User;
+import com.dark.request.SignUpRequest;
 import com.dark.request.SignInRequest;
 import com.dark.response.AuthResponse;
 import com.dark.service.AuthService;
@@ -22,13 +24,13 @@ public class AuthController {
 	AuthService authService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<AuthResponse> signUp(@RequestBody User user) throws UserException {
-		AuthResponse response = authService.signUp(user);
+	public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody SignUpRequest signUpRequest) throws UserException {
+		AuthResponse response = authService.signUp(signUpRequest);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<AuthResponse> signIn(@RequestBody SignInRequest signInRequest) {
+	public ResponseEntity<AuthResponse> signIn(@Valid @RequestBody SignInRequest signInRequest) {
 		AuthResponse response = authService.signIn(signInRequest);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

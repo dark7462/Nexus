@@ -13,6 +13,7 @@ import com.dark.configuration.JwtProvider;
 import com.dark.model.User;
 import com.dark.repository.UserRepository;
 import com.dark.request.SignInRequest;
+import com.dark.request.SignUpRequest;
 import com.dark.response.AuthResponse;
 
 @Service
@@ -28,12 +29,18 @@ public class AuthServiceImpl implements AuthService {
 	CustomerUserDetailService customerUserDetailService;
 
 	@Override
-	public AuthResponse signUp(User user) throws UserException {
-		User isExits = userRepository.findByEmail(user.getEmail());
+	public AuthResponse signUp(SignUpRequest signUpRequest) throws UserException {
+		User isExits = userRepository.findByEmail(signUpRequest.getEmail());
 		if (isExits != null) {
 			throw new UserException("Email Already Exists..!!");
 		}
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		
+		User user = new User();
+		user.setFirstName(signUpRequest.getFirstName());
+		user.setLastName(signUpRequest.getLastName());
+		user.setEmail(signUpRequest.getEmail());
+		user.setGender(signUpRequest.getGender());
+		user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
 		userRepository.save(user);
 

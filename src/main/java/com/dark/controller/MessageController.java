@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dark.model.Message;
+import com.dark.request.CreateMessageRequest;
+import com.dark.response.MessageDto;
+import com.dark.mapper.DtoMapper;
+import jakarta.validation.Valid;
+import java.util.stream.Collectors;
 import com.dark.service.Message.MessageService;
 import com.dark.service.Users.UserService;
 
@@ -29,15 +34,19 @@ public class MessageController {
 	private UserService userService;
 
 	@PostMapping("create/{chatId}")
-	public ResponseEntity<Message> createMessage(@RequestBody Message message,
+	public ResponseEntity<MessageDto> createMessage(@Valid @RequestBody CreateMessageRequest req,
 			@RequestHeader("Authorization") String jwt, @PathVariable Integer chatId) {
+		Message message = new Message();
+		message.setContent(req.getContent());
+		message.setImage(req.getImage());
 		message.setTimeStamp(LocalDateTime.now());
 		Message createdMessage = messageService.createMessage(userService.findUserByJwt(jwt), chatId, message);
-		return new ResponseEntity<>(createdMessage, HttpStatus.CREATED);
+		return new ResponseEntity<>(DtoMapper.toMessageDto(createdMessage), HttpStatus.CREATED);
 	}
 
 	@GetMapping("chat/{chatId}")
-	public ResponseEntity<List<Message>> findByChat(@PathVariable Integer chatId) {
-		return new ResponseEntity<>(messageService.findByChat(chatId), HttpStatus.OK);
+	public ResponseEntity<List<MessageDto>> findByChat(@PathVariable Integer chatId) {
+		List<MessageDto> messages = messageService.findByChat(chatId).stream().map(DtoMapper::toMessageDto).collect(Collectors.toList());
+		return new ResponseEntity<>(messages, HttpStatus.OK);
 	}
 }
