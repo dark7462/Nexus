@@ -1,6 +1,5 @@
 package com.dark.service.Posts;
 
-import com.dark.Exceptions.PostException;
 import com.dark.Exceptions.UserException;
 import com.dark.model.Post;
 import com.dark.model.User;

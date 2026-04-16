@@ -2,7 +2,6 @@ package com.dark.service.Comments;
 
 import com.dark.Exceptions.CommentException;
 import com.dark.Exceptions.PostException;
-import com.dark.Exceptions.UserException;
 import com.dark.model.Comment;
 import com.dark.model.Post;
 import com.dark.model.User;
