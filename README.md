@@ -1,83 +1,49 @@
-# 📱 Spring Social Media App (Backend API)
+# 📱 Spring Social Media App — Backend API
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen)
 ![Hibernate](https://img.shields.io/badge/Hibernate-JPA-59666C)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue)
 ![Build](https://img.shields.io/badge/Build-Maven-green)
-![Security](https://img.shields.io/badge/Security-JJWT-yellow)
+![Security](https://img.shields.io/badge/Security-JJWT%200.12.5-yellow)
 
-> A robust, highly optimized, and scalable RESTful backend for a Social Media Application built using **Java 17**, **Spring Boot**, and **PostgreSQL**.  
-> Designed with stateless JWT authentication, optimal database queries, and structured using Layered Architecture.
+> A robust, scalable RESTful backend for a Social Media Application built with **Java 17**, **Spring Boot 4.0.5**, and **PostgreSQL**.  
+> Stateless JWT authentication, full DTO-based API (no entity leakage), input validation on all endpoints, and centralized exception handling.
 
 ---
 
 ## 📌 Overview
 
-This application serves as the core backend engine for a social media platform, providing:
+This application serves as the core backend engine for a social media platform:
 
-- 👤 User Identity & Profile Management
-- 📝 Post Creation & Interactions
-- 💬 Real-time Commenting System
-- 🗄 Robust database layer powered by Hibernate ORM
-- 🔐 Secure API routing using Spring Security and JSON Web Tokens (JJWT)
-
-The system ensures clean relational data mapping, avoids N+1 query bottlenecks, and mitigates security leaks.
-
----
-
-# 🚀 Features
-
-## 👤 User Module
-
-- Secure JWT-Based Registration & Login
-- Profile Management
-- Follow & Unfollow Users
-- Save / Bookmark Posts
-
----
-
-## 📝 Post & Comment Module
-
-- Create Posts with Media URLs (Images/Videos)
-- Like & Unlike Posts
-- Seamlessly Drop Comments on Posts
-- Bi-directional relations avoiding messy join tables
-- Auto-cleanup of comments when a post is deleted
-
----
-
-## 🎥 Reel Module
-
-- Create Short-form Video Reels
-- Fetch Local and Global Reels Feed
-
----
-
-## 💬 Chat & Messaging Module
-
-- Create Direct/Group Chats with users
-- Send Real-time Messages
-- Retrieve Message History
+- 👤 **User Management** — Registration, login, profile, follow/unfollow, search
+- 📝 **Posts** — Create, like, save, delete with paginated feeds
+- 💬 **Comments** — Nested commenting with likes
+- 🎥 **Reels** — Short-form video feed
+- 🗨️ **Chat & Messaging** — Direct chats with message history
+- 🔐 **JWT Auth** — Stateless authentication on all `/api/**` routes
+- ✅ **Validated Inputs** — `@Valid` enforced on all write endpoints
+- 🛡️ **DTO Pattern** — Clean separation: raw JPA entities never exposed to clients
 
 ---
 
 # 🛠 Tech Stack
 
-| Layer | Technology | Purpose |
-|--------|------------|----------|
-| Language | Java 17 | Core Logic |
-| Framework | Spring Boot | REST API & IoC Container |
-| ORM | Spring Data JPA (Hibernate) | Object Relational Mapping |
-| Database | PostgreSQL | Persistent Storage |
-| Security | Spring Security + JJWT 0.12.5 | Stateless Authentication |
-| Build Tool | Maven | Dependency Management |
+| Layer       | Technology                                       |
+| ----------- | ------------------------------------------------ |
+| Language    | Java 17                                          |
+| Framework   | Spring Boot 4.0.5                                |
+| ORM         | Spring Data JPA (Hibernate)                      |
+| Database    | PostgreSQL                                       |
+| Security    | Spring Security + JJWT 0.12.5 (HS256, Stateless) |
+| Validation  | `spring-boot-starter-validation`                 |
+| Build       | Maven                                            |
+| Boilerplate | Lombok                                           |
+| Cache       | Spring Simple Cache (in-memory)                  |
 
 ---
 
-# 🗄 Database Architecture
-
-The system utilizes an optimized relational schema designed to reduce unnecessary joins and scale efficiently.
+# 🗄 Database Schema
 
 ```mermaid
 erDiagram
@@ -93,11 +59,13 @@ erDiagram
 
     USER {
         int userId PK
-        varchar first_name
-        varchar last_name
+        varchar firstName
+        varchar lastName
         varchar email
         varchar password
         varchar gender
+        set followers
+        set following
     }
 
     POST {
@@ -113,8 +81,8 @@ erDiagram
         int commentId PK
         varchar content
         datetime createdAt
-        int user_userId FK
-        int post_postId FK
+        int userId FK
+        int postId FK
     }
 
     REELS {
@@ -127,8 +95,8 @@ erDiagram
 
     CHAT {
         int id PK
-        varchar chat_name
-        varchar chat_image
+        varchar chatName
+        varchar chatImage
         datetime timeStamp
     }
 
@@ -137,34 +105,30 @@ erDiagram
         varchar content
         varchar image
         datetime timeStamp
-        int user_id FK
-        int chat_id FK
+        int userId FK
+        int chatId FK
     }
 ```
 
+---
+
 ## 📂 Project Structure
 
-```bash
+```
 SpringSocialMediaApp/
-│
 ├── pom.xml
 ├── README.md
-│
-└── src/
-    └── main/
-        ├── java/
-        │   └── com/
-        │       └── dark/
-        │           ├── configration/      # CORS, JWT, Security Configs
-        │           ├── controller/        # REST API Endpoints
-        │           ├── model/             # JPA Entities (User, Post, Comment)
-        │           ├── repository/        # Spring Data JPA Interfaces
-        │           ├── request/           # DTOs for Incoming Requests
-        │           ├── response/          # DTOs for API Responses
-        │           └── service/           # Core Logic Services
-        │
-        └── resources/
-            └── application.properties     # DB configuration
+├── reference.md               # Single source of truth for project context
+└── src/main/java/com/dark/
+    ├── configuration/         # Security (Appconfig), JWT (JwtProvider, jwtValidator), Cache
+    ├── controller/            # 7 REST Controllers
+    ├── Exceptions/            # Custom exceptions + GlobalException handler
+    ├── mapper/                # DtoMapper — all entity → DTO conversions
+    ├── model/                 # 6 JPA Entities (User, Post, Comment, Chat, Message, Reels)
+    ├── repository/            # Spring Data JPA repositories with custom JPQL queries
+    ├── request/               # Validated inbound DTOs (SignUpRequest, CreatePostRequest, etc.)
+    ├── response/              # Outbound DTOs (UserDto, PostDto, ChatDto, etc.)
+    └── service/               # Service interfaces + implementations per domain
 ```
 
 ---
@@ -174,147 +138,167 @@ SpringSocialMediaApp/
 ## ✅ Prerequisites
 
 - Java JDK 17+
-- PostgreSQL Server 12+
-- Maven
-- Spring Tools (Eclipse IDE)
+- PostgreSQL 12+
+- Maven 3+
+- Any IDE (IntelliJ, Eclipse, VS Code)
 
 ---
 
 ## 🛠 Step 1: Create Database
 
 ```sql
-CREATE DATABASE socialMediaApp;
+CREATE DATABASE spcialmediaapp;
 ```
 
 ---
 
-## 🔐 Step 2: Configure Database
-
-Open:
-
-```
-src/main/resources/application.properties
-```
-Ensure your PostgreSQL configuration matches:
+## 🔐 Step 2: Configure `application.properties`
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/socialMediaApp
-spring.datasource.username={USER_NAME}
-spring.datasource.password={PASSWORD}
+spring.datasource.url=jdbc:postgresql://localhost:5432/spcialmediaapp
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
 spring.jpa.hibernate.ddl-auto=update
 spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.show-sql=true
+spring.cache.type=simple
 ```
 
 ---
 
-## 📦 Step 3: Import into Spring Tools (Eclipse IDE)
+## ▶ Step 3: Run
 
-1. Open **Spring Tools (Eclipse IDE)**.
-2. Go to **File > Import...**
-3. Select **Maven > Existing Maven Projects** and click **Next**.
-4. Browse to the directory containing this project (`SpringSocialMediaApp`).
-5. Ensure `pom.xml` is selected and click **Finish**.
-6. Wait for Maven to download the dependencies and build the project workspace.
+```bash
+./mvnw spring-boot:run
+```
 
----
-
-# 🎮 Usage Guide
-
-## ▶ Run Application
-
-Run the Spring Boot application directly from within Spring Tools (Eclipse IDE):
-
-1. In the **Boot Dashboard** or **Package Explorer**, locate the project.
-2. Navigate to the main application file:
-   `src/main/java/com/dark/SpringSocialMediaAppApplication.java`
-3. Right-click on the file and select:
-   **Run As > Spring Boot App**
-4. The Tomcat server will start and the API will be accessible on `localhost:8080`.
+API accessible on `http://localhost:8080`
 
 ---
 
-## 🔑 Authentication Flow
+# 🔑 Authentication Flow
 
-1. **Sign Up:** `POST /auth/signup`
-2. **Login:** `POST /auth/signin`
-3. Receive `JWT Token` in response.
-4. Pass Token in Header:
-   `Authorization: Bearer <your_jwt_token>`
+1. **Sign Up:** `POST /auth/signup` — returns JWT token
+2. **Sign In:** `POST /auth/signin` — returns JWT token
+3. For all other endpoints, pass the token in the header:
 
----
+```
+Authorization: Bearer <your_jwt_token>
+```
 
-# 🌐 API Endpoints Reference
-
-### 👤 User Endpoints
-| HTTP Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/auth/signup` | Register a new user |
-| `POST` | `/auth/signin` | Login & receive JWT |
-| `GET` | `/api/users` | List all users |
-| `GET` | `/api/user/{id}` | Get user by ID |
-| `PUT` | `/api/user` | Update user profile |
-| `GET` | `/api/users/profile` | Get logged-in user profile |
-| `PUT` | `/api/users/follow/{userId}` | Follow a user |
-| `DELETE` | `/api/users/unfollow/{userId}` | Unfollow a user |
-| `GET` | `/api/user/search?query=` | Search users |
-| `GET` | `/api/user/{userId}/followers/count` | Get followers count |
-| `GET` | `/api/user/{userId}/following/count` | Get following count |
-
-### 📝 Post Endpoints
-| HTTP Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/post` | Create a new post |
-| `GET` | `/api/allposts` | Get all posts (global feed) |
-| `GET` | `/api/posts` | Get all posts by current user |
-| `PUT` | `/api/post/likepost/{postId}` | Like / Unlike a post |
-| `PUT` | `/api/post/savepost/{postId}` | Save / Bookmark a post |
-| `DELETE` | `/api/post/{postId}` | Delete a post |
-
-### 💬 Comment Endpoints
-| HTTP Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/commnet/create/{postId}` | Add a comment to a post |
-| `POST` | `/api/like/{commentId}` | Like a comment |
-| `GET` | `/api/comment/{commentId}` | Get comment by ID |
-| `GET` | `/api/post/{postId}` | Get all comments for a post |
-| `DELETE` | `/api/comment/{commentId}/{postId}` | Delete a comment |
-
-### 🎥 Reel Endpoints
-| HTTP Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/reel` | Create a new reel |
-| `GET` | `/api/reels` | Get all reels |
-| `GET` | `/api/reels/{userId}` | Get reels by specific user |
-
-### 🗨️ Chat & Message Endpoints
-| HTTP Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/chats/create` | Create a new chat |
-| `GET` | `/api/chats/{chatId}` | Get chat details by ID |
-| `GET` | `/api/chats/user/{userId}` | Get all chats for a user |
-| `POST` | `/api/message/create/{chatId}` | Send a message in a chat |
-| `GET` | `/api/message/chat/{chatId}` | Get messages for a chat |
+All routes under `/api/**` are protected. Auth routes are public.
 
 ---
 
-# 🛡 Key Highlights
+# 🌐 API Reference
 
-- **Stateless Authentication:** Completely decoupled JWT authentication flow.
-- **N+1 Query Prevention:** Used `FetchType.LAZY` across all `@ManyToOne` bindings.
-- **Jackson Proxy Safety:** Bound `@JsonIgnoreProperties` to prevent serialization crashes on lazy proxies.
-- **Memory Management:** Bi-directional entities utilizing `orphanRemoval = true` to effortlessly eliminate dangling database records.
-- **Password Leak Prevention:** Applied `@JsonIgnore` annotations securing hashed passwords from returning to clients.
+### 👤 Auth
+
+| Method | Endpoint       | Body            | Returns              |
+| ------ | -------------- | --------------- | -------------------- |
+| `POST` | `/auth/signup` | `SignUpRequest` | `AuthResponse` (201) |
+| `POST` | `/auth/signin` | `SignInRequest` | `AuthResponse` (200) |
+
+**SignUpRequest fields:** `firstName`\*, `lastName`, `gender`\*, `email`\*, `password`\* (min 6 chars)  
+\* = required
+
+---
+
+### 👤 User
+
+| Method   | Endpoint                             | Description            | Returns         |
+| -------- | ------------------------------------ | ---------------------- | --------------- |
+| `GET`    | `/api/users`                         | All users (paginated)  | `Page<UserDto>` |
+| `GET`    | `/api/user/{id}`                     | Get user by ID         | `UserDto`       |
+| `PUT`    | `/api/user`                          | Update own profile     | `UserDto`       |
+| `GET`    | `/api/users/profile`                 | Own profile (from JWT) | `UserDto`       |
+| `PUT`    | `/api/users/follow/{userId}`         | Follow a user          | `UserDto`       |
+| `DELETE` | `/api/users/unfollow/{userId}`       | Unfollow a user        | `UserDto`       |
+| `GET`    | `/api/user/search?query=`            | Search by name/email   | `Page<UserDto>` |
+| `GET`    | `/api/user/{userId}/followers/count` | Follower count         | String          |
+| `GET`    | `/api/user/{userId}/following/count` | Following count        | String          |
 
 ---
 
-# 🚀 Future Improvements
+### 📝 Post
 
-- Frontend Implementation (React / Next.js)
-- DTO (Data Transfer Object) Refactoring for all endpoints
-- Notification System
-- WebSockets for fully real-time Chat & Messaging
+| Method   | Endpoint                      | Description                           | Returns         |
+| -------- | ----------------------------- | ------------------------------------- | --------------- |
+| `POST`   | `/api/post`                   | Create post                           | `PostDto` (201) |
+| `GET`    | `/api/posts`                  | Own posts (from JWT)                  | `List<PostDto>` |
+| `GET`    | `/api/allposts`               | Global feed (paginated, latest first) | `Page<PostDto>` |
+| `PUT`    | `/api/post/likepost/{postId}` | Like/unlike a post                    | `PostDto`       |
+| `PUT`    | `/api/post/savepost/{postId}` | Save/bookmark a post                  | `PostDto`       |
+| `DELETE` | `/api/post/{postId}`          | Delete own post                       | `ApiResponse`   |
+
+**CreatePostRequest fields:** `caption`\*, `imageURL`, `videoURL`
 
 ---
+
+### 💬 Comment
+
+| Method   | Endpoint                            | Description            | Returns            |
+| -------- | ----------------------------------- | ---------------------- | ------------------ |
+| `POST`   | `/api/commnet/create/{postId}`      | Add comment to post    | `CommentDto` (201) |
+| `POST`   | `/api/like/{commentId}`             | Like a comment         | `CommentDto`       |
+| `GET`    | `/api/comment/{commentId}`          | Get comment by ID      | `CommentDto`       |
+| `GET`    | `/api/post/{postId}`                | All comments on a post | `List<CommentDto>` |
+| `DELETE` | `/api/comment/{commentId}/{postId}` | Delete comment         | `ApiResponse`      |
+
+**CreateCommentRequest fields:** `content`\*
+
+> Note: The create comment URL has a known typo — `/commnet/` (not `/comment/`).
+
+---
+
+### 🎥 Reel
+
+| Method | Endpoint              | Description                         | Returns         |
+| ------ | --------------------- | ----------------------------------- | --------------- |
+| `POST` | `/api/reel`           | Create a reel                       | `ReelDto` (201) |
+| `GET`  | `/api/reels`          | All reels (paginated, latest first) | `Page<ReelDto>` |
+| `GET`  | `/api/reels/{userId}` | Reels by a user                     | `List<ReelDto>` |
+
+**CreateReelRequest fields:** `title`\*, `video`\*
+
+---
+
+### 🗨️ Chat & Message
+
+| Method | Endpoint                       | Description                | Returns            |
+| ------ | ------------------------------ | -------------------------- | ------------------ |
+| `POST` | `/api/chats/create`            | Create a direct chat       | `ChatDto` (201)    |
+| `GET`  | `/api/chats/{chatId}`          | Get chat by ID             | `ChatDto`          |
+| `GET`  | `/api/chats/user/{userId}`     | All chats for current user | `List<ChatDto>`    |
+| `POST` | `/api/message/create/{chatId}` | Send a message             | `MessageDto` (201) |
+| `GET`  | `/api/message/chat/{chatId}`   | Message history            | `List<MessageDto>` |
+
+**CreateMessageRequest fields:** `content`\*, `image`  
+**CreatChatRequest fields:** `reciverId` (Integer)
+
+---
+
+# 🛡 Architecture Highlights
+
+- **Stateless JWT Auth** — Token-based, no server sessions. JWT stores only `email` claim.
+- **DTO Pattern** — `DtoMapper` class converts all JPA entities to safe outbound DTOs. No raw entities are ever returned from controllers.
+- **Input Validation** — `@Valid` + Jakarta Validation annotations on all request bodies. Invalid payloads return `400` with field-level error messages.
+- **Centralized Exception Handling** — `GlobalException` (@ControllerAdvice) maps all domain exceptions to `404`, validation errors to `400`, and unexpected errors to `500`.
+- **LAZY Fetching** — All `@ManyToOne` relations use `FetchType.LAZY` to avoid N+1 queries.
+- **Hibernate Proxy Safety** — `@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})` prevents serialization crashes.
+- **Password Security** — BCrypt hashing; passwords annotated `@JsonProperty(WRITE_ONLY)` and never returned in responses.
+- **Auto Cleanup** — Comments deleted automatically when parent post is deleted (`CascadeType.ALL` + `orphanRemoval = true`).
+- **CORS** — Configured for `localhost:3000` and `localhost:5173`.
+
+---
+
+# 🚀 Roadmap
+
+- [ ] WebSockets — Real-time chat using STOMP
+- [ ] File Uploads — AWS S3 / Cloudinary (replacing plain-text URL strings)
+- [ ] Role-Based Access Control — `ADMIN` / `USER` roles with `@PreAuthorize`
+- [ ] Swagger / OpenAPI — Auto-generated API docs at `/swagger-ui.html`
+- [ ] Frontend — React / Next.js client
 
 ---
 
