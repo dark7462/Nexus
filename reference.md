@@ -172,6 +172,15 @@ Auth routes (`/auth/**`) are public.
 | GET | `/api/reels` | — | `Page<ReelDto>` (sort: createdAt DESC) |
 | GET | `/api/reels/{userId}` | — | `List<ReelDto>` |
 
+### WebSocket (STOMP over SockJS)
+| Type | Value | Purpose |
+|---|---|---|
+| Handshake endpoint | `/ws` | Client connection endpoint (SockJS enabled) |
+| Client send destination | `/app/chat/send` | Send chat payload from client |
+| Server broadcast destination | `/topic/chat/{roomId}` | Broadcast chat events to subscribers in a room |
+
+Payload model: `ChatMessage { roomId, sender, content }`
+
 ---
 
 ## Request DTOs (Inbound, all validated)
@@ -255,10 +264,9 @@ Error body: `ErrorDetails { message, description, timestamp }`
 
 ## Roadmap (Not Yet Built)
 
-1. **WebSockets for Real-Time Chat** — STOMP over WebSockets
-2. **File Uploads** — Multipart uploads to AWS S3 or Cloudinary (replacing string URLs)
-3. **Role-Based Access Control (RBAC)** — `ADMIN`/`USER` enum + `@PreAuthorize`
-4. **Swagger/OpenAPI Docs** — `springdoc-openapi-starter-webmvc-ui`
+1. **File Uploads** — Multipart uploads to AWS S3 or Cloudinary (replacing string URLs)
+2. **Role-Based Access Control (RBAC)** — `ADMIN`/`USER` enum + `@PreAuthorize`
+3. **Swagger/OpenAPI Docs** — `springdoc-openapi-starter-webmvc-ui`
 
 ---
 
@@ -282,3 +290,5 @@ Error body: `ErrorDetails { message, description, timestamp }`
 | 2026-04-14 | All 7 controllers updated — no raw JPA entities exposed, `@Valid` enforced on all request bodies |
 | 2026-04-14 | `AuthService.signUp` updated to accept `SignUpRequest` instead of raw `User` entity |
 | 2026-04-16 | `reference.md` created — single source of truth for entire project |
+| 2026-04-16 | WebSocket chat stabilized: fixed STOMP endpoint registration, enabled room-based topic broadcast, and added integration tests for delivery and room isolation |
+| 2026-04-16 | Added broad automated test suite across service implementations, mapper/JWT utilities, home/websocket controllers; total suite now passing (48 tests) |
