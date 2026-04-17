@@ -17,6 +17,7 @@
 - **Validation**: `spring-boot-starter-validation` — `@Valid` enforced at controller level
 - **Cache**: `spring.cache.type=simple` (in-memory)
 - **CORS**: Allows `localhost:3000` and `localhost:5173`
+- **API Docs**: Springdoc OpenAPI UI at `/swagger-ui.html`, spec at `/v3/api-docs`
 
 ---
 
@@ -222,6 +223,7 @@ All conversions done by `DtoMapper` (static utility class in `com.dark.mapper`).
 - **Secret key**: in `jwtConstant.SECRET_KEY`
 - **Public routes**: anything not under `/api/**`
 - **Protected routes**: all `/api/**`
+- **Swagger routes**: `/swagger-ui.html`, `/swagger-ui/**`, `/v3/api-docs/**` are public
 
 ---
 
@@ -266,7 +268,6 @@ Error body: `ErrorDetails { message, description, timestamp }`
 
 1. **File Uploads** — Multipart uploads to AWS S3 or Cloudinary (replacing string URLs)
 2. **Role-Based Access Control (RBAC)** — `ADMIN`/`USER` enum + `@PreAuthorize`
-3. **Swagger/OpenAPI Docs** — `springdoc-openapi-starter-webmvc-ui`
 
 ---
 
@@ -292,3 +293,4 @@ Error body: `ErrorDetails { message, description, timestamp }`
 | 2026-04-16 | `reference.md` created — single source of truth for entire project |
 | 2026-04-16 | WebSocket chat stabilized: fixed STOMP endpoint registration, enabled room-based topic broadcast, and added integration tests for delivery and room isolation |
 | 2026-04-16 | Added broad automated test suite across service implementations, mapper/JWT utilities, home/websocket controllers; total suite now passing (48 tests) |
+| 2026-04-17 | Integrated Swagger/OpenAPI docs via springdoc; enabled public access to `/swagger-ui.html`, `/swagger-ui/**`, and `/v3/api-docs/**` |
